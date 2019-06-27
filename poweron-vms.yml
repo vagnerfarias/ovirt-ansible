@@ -1,0 +1,35 @@
+---
+- name: Start VMs 
+  hosts: localhost
+  gather_facts: no
+
+  vars_files:
+    - ovirt-engine-vars.yml
+
+  pre_tasks:
+  - name: Log in
+    ovirt_auth:
+      url: "{{ engine_url }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      #ca_file: "{{ engine_cafile }}"
+      insecure: true
+    tags:
+      - always
+
+  tasks:
+
+    - name: Gather vm list
+      ovirt_vm_facts:
+        auth: "{{ ovirt_auth }}"
+        pattern: "{{ vm_search_pattern }}" 
+    #- debug:
+    #    var: ovirt_vms
+    
+    - name: Run VM
+      ovirt_vm:
+        auth: "{{ ovirt_auth }}"
+        state: running
+        name: "{{ item.name }}"
+      loop: "{{ ovirt_vms|flatten(levels=1) }}"
+
