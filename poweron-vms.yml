@@ -21,14 +21,14 @@
   tasks:
 
     - name: Gather vm list
-      ovirt_vm_facts:
+      ovirt_vms_facts:
         auth: "{{ ovirt_auth }}"
         pattern: "{{ vm_search_pattern }}" 
     #- debug:
     #    var: ovirt_vms
     
     - name: Run VM
-      ovirt_vm:
+      ovirt_vms:
         auth: "{{ ovirt_auth }}"
         state: running
         name: "{{ item.name }}"
